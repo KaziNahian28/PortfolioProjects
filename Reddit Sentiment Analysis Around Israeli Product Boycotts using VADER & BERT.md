@@ -63,28 +63,6 @@ print("Data collection complete. Saved to reddit_boycott_data_monthwise.csv")
 ```
 
 
-```python
-import pandas as pd
-impt = pd.read_csv('reddit_boycott_data_monthwise.csv')
-impt
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
 </style>
 <table border="1" class="dataframe">
   <thead>
