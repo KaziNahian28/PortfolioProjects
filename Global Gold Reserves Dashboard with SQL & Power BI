@@ -1,0 +1,76 @@
+--What are the total Gold Reserves for Each Country in 2023?--
+SELECT Country, SUM(Reserves) AS Total_Reserves_2023
+FROM reserves
+WHERE Year = 2023
+GROUP BY Country
+ORDER BY Total_Reserves_2023 DESC;
+
+--The countries with the largest increase in Reserves from 2021 - 2023--
+SELECT r1.Country,
+   	(r2.Reserves - r1.Reserves) AS Growth
+FROM reserves r1
+JOIN reserves r2 ON r1.Country = r2.Country
+WHERE r1.Year = 2021 AND r2.Year = 2023
+ORDER BY Growth DESC;
+
+--What is the average gold reserves held by each country?--
+SELECT Country, AVG(Reserves) AS Avg_Reserves
+FROM reserves
+GROUP BY Country
+ORDER BY Avg_Reserves DESC;
+
+--Which country has the highest reserves in each year?--
+SELECT Year, Country, Reserves AS Max_Reserves
+FROM reserves r
+WHERE Reserves = (
+	SELECT MAX(Reserves)
+	FROM reserves
+	WHERE Year = r.Year)
+ORDER BY Year;
+
+---What is the % of gold reserves globally for each country?--
+SELECT Country,
+   	Reserves,
+   	(Reserves * 100.0 / (SELECT SUM(Reserves) FROM reserves WHERE Year = 2023)) AS Percentage_of_Global_Reserves
+FROM reserves
+WHERE Year = 2023
+ORDER BY Percentage_of_Global_Reserves DESC;
+
+---Ranking of countries by gold reserves in each year--
+SELECT Country, Year, Reserves,
+   	RANK() OVER (PARTITION BY Year ORDER BY Reserves DESC) AS Rank
+FROM reserves;
+
+---Gold reserves of European vs. Asian countries 2023--
+SELECT 'Europe' AS Continent, SUM(Reserves) AS Total_Reserves
+FROM reserves
+WHERE Country IN (
+	'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus',
+	'Belgium', 'Bosnia and Herzegovina', 'Bulgaria', 'Croatia', 'Cyprus',
+	'Czech Republic', 'Denmark', 'Estonia', 'Finland', 'France', 'Georgia',
+	'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Italy',
+	'Latvia', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Malta',
+	'Moldova', 'Monaco', 'Montenegro', 'Netherlands', 'North Macedonia',
+	'Norway', 'Poland', 'Portugal', 'Romania', 'Russia', 'San Marino',
+	'Serbia', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland',
+	'Ukraine', 'United Kingdom', 'Vatican City'
+)
+AND Year = 2023
+
+UNION ALL
+
+SELECT 'Asia' AS Continent, SUM(Reserves) AS Total_Reserves
+FROM reserves
+WHERE Country IN (
+	'Afghanistan', 'Armenia', 'Azerbaijan', 'Bahrain', 'Bangladesh',
+	'Bhutan', 'Brunei', 'Cambodia', 'China', 'Cyprus', 'Georgia',
+	'India', 'Indonesia', 'Iran', 'Iraq', 'Israel', 'Japan',
+	'Jordan', 'Kazakhstan', 'Kuwait', 'Kyrgyzstan', 'Laos',
+	'Lebanon', 'Malaysia', 'Maldives', 'Mongolia', 'Myanmar',
+	'Nepal', 'North Korea', 'Oman', 'Pakistan', 'Palestine',
+	'Philippines', 'Qatar', 'Saudi Arabia', 'Singapore',
+	'South Korea', 'Sri Lanka', 'Syria', 'Tajikistan', 'Thailand',
+	'Timor-Leste', 'Turkmenistan', 'United Arab Emirates',
+	'Uzbekistan', 'Vietnam', 'Yemen'
+)
+AND Year = 2023;
